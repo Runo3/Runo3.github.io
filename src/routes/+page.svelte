@@ -3,15 +3,22 @@
   let newAgenda = '';
 
   function addAgenda() {
-    if (newAgenda) {
-      agenda = [...agenda, newAgenda];
-      newAgenda = '';
-    }
+    const cleaned = newAgenda.trim();
+    if (!cleaned) return;
+
+    agenda = [
+      ...agenda,
+      {
+        id: crypto.randomUUID(),
+        text: cleaned
+      }
+    ];
+
+    newAgenda = '';
   }
 
-  function removeAgenda(index) {
-    agenda.splice(index, 1);
-    agenda = [...agenda]; // trigger reactivity
+  function removeAgenda(id) {
+    agenda = agenda.filter((item) => item.id !== id);
   }
 </script>
 
@@ -23,15 +30,18 @@
       class="agenda-input"
       bind:value={newAgenda}
       placeholder="Add a new agenda"
+      on:keydown={(e) => e.key === 'Enter' && addAgenda()}
     />
     <button class="add-button" on:click={addAgenda}>Add</button>
   </div>
 
   <ul class="agenda-list">
-    {#each agenda as item, index (item)}
+    {#each agenda as item (item.id)}
       <li class="agenda-item">
-        {item}
-        <button class="remove-button" on:click={() => removeAgenda(index)}>Remove</button>
+        {item.text}
+        <button class="remove-button" on:click={() => removeAgenda(item.id)}>
+          Remove
+        </button>
       </li>
     {/each}
   </ul>
