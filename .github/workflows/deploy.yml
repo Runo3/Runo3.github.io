@@ -35,5 +35,8 @@ jobs:
         with:
           path: build
 
+      - name: Run test
+        run: npm run test:e2e
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
